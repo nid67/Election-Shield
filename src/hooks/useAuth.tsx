@@ -67,8 +67,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const loginWithGoogle = async () => {
+    if (!auth) {
+      console.error("Firebase Auth not initialized. Check your environment variables.");
+      return;
+    }
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+    }
   };
 
   const logout = async () => {
