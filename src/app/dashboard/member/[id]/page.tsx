@@ -9,8 +9,7 @@ import { useMachine } from "@xstate/react";
 import { electionMachine } from "@/state/electionMachine";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, ArrowLeft, Bot, MapPin, Search } from "lucide-react";
+import { CheckCircle2, Circle, ArrowLeft, Bot, MapPin } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { askElectionAI } from "@/app/actions/ai";
@@ -50,7 +49,8 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
         if (data.checklist.boothFound) send({ type: 'FIND_BOOTH' });
         if (data.checklist.voted) send({ type: 'VOTE' });
       }
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load member details");
     } finally {
       setLoading(false);
@@ -61,13 +61,14 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
     if (user && id) {
       loadMember();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, id]);
 
   const updateMemberChecklist = async (updates: Partial<FamilyMember['checklist']>, newStatus?: FamilyMember['status']) => {
     if (!user || !member) return;
     const docRef = doc(db, `users/${user.uid}/familyMembers`, member.id);
     const newChecklist = { ...member.checklist, ...updates };
-    const updateData: any = { checklist: newChecklist };
+    const updateData: Record<string, unknown> = { checklist: newChecklist };
     if (newStatus) updateData.status = newStatus;
     
     await updateDoc(docRef, updateData);
@@ -126,6 +127,7 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
       // Save to Cache
       localStorage.setItem(cacheKey, res);
     } catch (err) {
+      console.error(err);
       toast.error("AI service is currently busy. Please try again.");
     } finally {
       setAsking(false);
@@ -137,8 +139,8 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard">
-          <Button variant="outline" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
+        <Link href="/dashboard" aria-label="Go back to dashboard">
+          <Button variant="outline" size="icon" aria-label="Back"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{member.name}'s Journey</h1>

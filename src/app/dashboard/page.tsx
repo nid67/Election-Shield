@@ -29,6 +29,7 @@ export default function DashboardPage() {
       const data = await getFamilyMembers(user.uid);
       setMembers(data);
     } catch (error) {
+      console.error(error);
       toast.error("Failed to load family members");
     } finally {
       setLoading(false);
@@ -39,6 +40,7 @@ export default function DashboardPage() {
     if (user) {
       loadMembers();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleAddMember = async (e: React.FormEvent) => {
@@ -69,6 +71,7 @@ export default function DashboardPage() {
       setNewMember({ name: "", age: "" });
       loadMembers();
     } catch (error) {
+      console.error(error);
       toast.error("Failed to add member");
     }
   };
@@ -81,6 +84,7 @@ export default function DashboardPage() {
         toast.success("Member removed");
         loadMembers();
       } catch (error) {
+        console.error(error);
         toast.error("Failed to remove member");
       }
     }
@@ -179,7 +183,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     {getStatusBadge(member.status)}
-                    <button onClick={() => handleDelete(member.id)} className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                    <button onClick={() => handleDelete(member.id)} className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 focus:opacity-100" aria-label={`Delete ${member.name}`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
