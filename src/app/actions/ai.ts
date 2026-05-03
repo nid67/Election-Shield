@@ -4,6 +4,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
+/**
+ * Core AI action that provides personalized election guidance using Google Gemini.
+ * 
+ * @param context - The user's demographic and journey state
+ * @param question - The specific query from the user
+ * @returns A formatted, empathetic response from the Election Shield AI
+ */
 export const askElectionAI = async (
   context: { age: number; registered: boolean; currentState?: string; name: string },
   question: string

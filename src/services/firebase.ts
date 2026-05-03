@@ -11,8 +11,19 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+/**
+ * Firebase application instance initialized with environment-specific configuration.
+ */
 const app = typeof window !== 'undefined' && firebaseConfig.apiKey ? (getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)) : null as any;
+
+/**
+ * Firebase Authentication service instance.
+ */
 const auth = app ? getAuth(app) : null as any;
+
+/**
+ * Firestore Database service instance.
+ */
 const db = app ? getFirestore(app) : null as any;
 
 export { app, auth, db };
