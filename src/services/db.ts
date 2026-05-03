@@ -8,6 +8,7 @@ import { FamilyMember } from "@/types";
  * @returns An array of family member objects
  */
 export const getFamilyMembers = async (userId: string): Promise<FamilyMember[]> => {
+  if (!db) throw new Error("Firestore not initialized");
   const membersRef = collection(db, `users/${userId}/familyMembers`);
   const snapshot = await getDocs(membersRef);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FamilyMember));
@@ -20,6 +21,7 @@ export const getFamilyMembers = async (userId: string): Promise<FamilyMember[]> 
  * @returns The ID of the newly created document
  */
 export const addFamilyMember = async (userId: string, member: Omit<FamilyMember, "id" | "createdAt">) => {
+  if (!db) throw new Error("Firestore not initialized");
   const membersRef = collection(db, `users/${userId}/familyMembers`);
   const docRef = await addDoc(membersRef, {
     ...member,
@@ -35,6 +37,7 @@ export const addFamilyMember = async (userId: string, member: Omit<FamilyMember,
  * @param updates - Partial object containing the fields to update
  */
 export const updateFamilyMember = async (userId: string, memberId: string, updates: Partial<FamilyMember>) => {
+  if (!db) throw new Error("Firestore not initialized");
   const memberRef = doc(db, `users/${userId}/familyMembers`, memberId);
   await updateDoc(memberRef, updates);
 };
@@ -45,6 +48,7 @@ export const updateFamilyMember = async (userId: string, memberId: string, updat
  * @param memberId - The ID of the family member to delete
  */
 export const deleteFamilyMember = async (userId: string, memberId: string) => {
+  if (!db) throw new Error("Firestore not initialized");
   const memberRef = doc(db, `users/${userId}/familyMembers`, memberId);
   await deleteDoc(memberRef);
 };
