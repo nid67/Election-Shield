@@ -28,26 +28,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
         // Sync with Firestore
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
-        
-        let userProfile: UserProfile;
-        if (!userSnap.exists()) {
-          userProfile = {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email || "",
-            displayName: firebaseUser.displayName,
-            createdAt: Date.now(),
-          };
-          await setDoc(userRef, userProfile);
-        } else {
-          userProfile = userSnap.data() as UserProfile;
+        try {
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const userSnap = await getDoc(userRef);
+          
+          let userProfile: UserProfile;
+          if (!userSnap.exists()) {
+            userProfile = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              displayName: firebaseUser.displayName,
+              createdAt: Date.now(),
+            };
+            await setDoc(userRef, userProfile);
+          } else {
+            userProfile = userSnap.data() as UserProfile;
+          }
+          setProfile(userProfile);
+        } catch (error) {
+          console.error("Profile sync error:", error);
         }
-        setProfile(userProfile);
       } else {
         setProfile(null);
       }
