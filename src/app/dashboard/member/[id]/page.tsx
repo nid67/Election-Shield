@@ -32,12 +32,6 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
   // XState
   const [state, send] = useMachine(electionMachine);
 
-  useEffect(() => {
-    if (user && id) {
-      loadMember();
-    }
-  }, [user, id]);
-
   const loadMember = async () => {
     if (!user) return;
     try {
@@ -62,6 +56,12 @@ export default function MemberJourneyPage({ params }: { params: Promise<{ id: st
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user && id) {
+      loadMember();
+    }
+  }, [user, id]);
 
   const updateMemberChecklist = async (updates: Partial<FamilyMember['checklist']>, newStatus?: FamilyMember['status']) => {
     if (!user || !member) return;

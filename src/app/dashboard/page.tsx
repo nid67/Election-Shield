@@ -22,12 +22,6 @@ export default function DashboardPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newMember, setNewMember] = useState({ name: "", age: "" });
 
-  useEffect(() => {
-    if (user) {
-      loadMembers();
-    }
-  }, [user]);
-
   const loadMembers = async () => {
     if (!user) return;
     setLoading(true);
@@ -40,6 +34,12 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      loadMembers();
+    }
+  }, [user]);
 
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();

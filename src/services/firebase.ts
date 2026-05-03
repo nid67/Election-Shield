@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { FirebaseApp, initializeApp, getApps, getApp } from "firebase/app";
+import { Auth, getAuth } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -14,16 +14,16 @@ const firebaseConfig = {
 /**
  * Firebase application instance initialized with environment-specific configuration.
  */
-const app = typeof window !== 'undefined' && firebaseConfig.apiKey ? (getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)) : null as any;
+const app: FirebaseApp | null = typeof window !== 'undefined' && firebaseConfig.apiKey ? (getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)) : null;
 
 /**
  * Firebase Authentication service instance.
  */
-const auth = app ? getAuth(app) : null as any;
+const auth: Auth | null = app ? getAuth(app) : null;
 
 /**
  * Firestore Database service instance.
  */
-const db = app ? getFirestore(app) : null as any;
+const db: Firestore | null = app ? getFirestore(app) : null;
 
 export { app, auth, db };

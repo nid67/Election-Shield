@@ -47,11 +47,11 @@ export const askElectionAI = async (
 
     const result = await model.generateContent(prompt);
     return result.response.text();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Gemini AI API Error:", {
-      message: error.message,
-      stack: error.stack,
-      status: error.status
+      message: errorMessage,
+      error
     });
     return "I'm currently recalibrating my data streams. Please try asking again in a moment, or check the ECI official portal.";
   }
